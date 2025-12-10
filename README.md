@@ -163,16 +163,27 @@ Your agent now receives authenticated requests from oqtopus!
 
 ## 🔧 Environment Variables
 
-| Variable | Description | Required |
-|----------|-------------|----------|
-| `GEMINI_API_KEY` | Google Gemini API key | Yes (if using Gemini) |
-| `GEMINI_VERSION` | Gemini model version | No (default: latest) |
-| `OPENAI_API_KEY` | OpenAI API key | Yes (if using OpenAI) |
-| `LLM_PROVIDER` | `gemini` or `openai` | No (default: `gemini`) |
-| `PK_STORAGE_TYPE` | `local` or `mongodb` | No (default: `local`) |
-| `SECRET_KEY` | Flask secret key | Yes (production) |
-| `ENV` | `development` or `production` | No (default: `development`) |
-| `MONGO_DB_*` | MongoDB connection settings | Yes (if using MongoDB) |
+| Variable | Description | Required                       |
+|----------|-------------|--------------------------------|
+| `APP_ENV` | Set to `production` for production mode, otherwise defaults to development | No (default: `development`)    |
+| `GEMINI_API_KEY` | Google Gemini API key | Yes (if using Gemini)          |
+| `GEMINI_VERSION` | Gemini model version (e.g., `gemini-pro`) | No (default: latest)           |
+| `OPENAI_API_KEY` | OpenAI API key | Yes (if using OpenAI)          |
+| `LLM_PROVIDER` | LLM provider to use: `gemini` or `openai` | No (default: `gemini`)         |
+| `PK_STORAGE_TYPE` | Private key storage type: `local` or `mongodb` | No (default: `local`)          |
+| `SECRET_KEY` | Flask secret key for session security. Generate with: `python -c "import secrets; print(secrets.token_hex(32))"` | Yes (production)               |
+| `PK_ENCRYPTION_SALT` | Salt for private key encryption. Generate with: `python -c "import secrets; print(secrets.token_hex(32))"` | Yes (production)               |
+| `MONGO_DB_USER` | MongoDB username | Yes (if using MongoDB)         |
+| `MONGO_DB_PASS` | MongoDB password | Yes (if using MongoDB)         |
+| `MONGO_DB_REST_URL` | MongoDB connection URL | Yes (if using MongoDB)         |
+| `MONGO_DB_NAME` | MongoDB database name (production) | Yes (if using MongoDB)         |
+| `MONGO_DB_NAME_TEST` | MongoDB database name (development/test) | No                             |
+| `SENDER_EMAIL` | Email address for sending contact form emails | Yes (if contact form enabled)  |
+| `SENDER_APP_PASSWORD` | App password for the sender email (e.g., Gmail app password) | Yes (if contact form enabled)  |
+| `SMTP_SERVER` | SMTP server address | No (default: `smtp.gmail.com`) |
+| `SMTP_PORT` | SMTP server port | No (default: `587`)            |
+| `RECIPIENT_EMAIL` | Email address to receive contact form submissions | Yes (if contact form enabled)   |
+
 
 ## 🔌 API Reference
 

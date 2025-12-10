@@ -69,13 +69,13 @@ class Config(object):
     WTF_CSRF_ENABLED = True
     WTF_CSRF_TIME_LIMIT = 3600
 
-    SENDER_EMAIL = os.getenv("SENDER_EMAIL")
-    SENDER_APP_PASSWORD = os.getenv("SENDER_APP_PASSWORD")
+    SENDER_EMAIL = os.getenv("SENDER_EMAIL", None)
+    SENDER_APP_PASSWORD = os.getenv("SENDER_APP_PASSWORD", None)
     SMTP_SERVER = os.getenv(
         "SMTP_SERVER", "smtp.gmail.com"
     )  # Default to Gmail's SMTP server
     SMTP_PORT = int(os.getenv("SMTP_PORT", 587))  # Default to Gmail's TLS port
-    RECIPIENT_EMAIL = os.getenv("RECIPIENT_EMAIL")
+    RECIPIENT_EMAIL = os.getenv("RECIPIENT_EMAIL", None)
 
 
 class ProductionConfig(Config):
