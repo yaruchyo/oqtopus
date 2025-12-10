@@ -1,32 +1,35 @@
+import logging
 import os
 import re
-import logging
 from datetime import datetime
+
 from flask import (
+    Blueprint,
     Flask,
+    Response,
+    current_app,
+    flash,
+    redirect,
     render_template,
     request,
-    Response,
     stream_with_context,
-    redirect,
     url_for,
-    flash,
-    current_app,
 )
-from flask_login import login_required, current_user
+from flask_login import current_user, login_required
 from rotagent import KeyManager
-from agent_package.domain_layer.route_class_domain import CategoryPrediction, CATEGORIES
-from agent_package.system_layer.utils import (
-    save_data,
-    get_registered_agents,
-    get_domains,
-    add_agent,
-    # add_domain, # Removed as domains are now derived from agents
-    delete_agent as remove_agent,
-)
+
+from agent_package import config, pk_storage
+from agent_package.domain_layer.route_class_domain import CATEGORIES, CategoryPrediction
 from agent_package.system_layer.security import encrypt_private_key, is_safe_url
-from agent_package import pk_storage, config
-from flask import Blueprint
+from agent_package.system_layer.utils import add_agent
+from agent_package.system_layer.utils import (
+    delete_agent as remove_agent,
+)  # add_domain, # Removed as domains are now derived from agents
+from agent_package.system_layer.utils import (
+    get_domains,
+    get_registered_agents,
+    save_data,
+)
 
 logger = logging.getLogger(__name__)
 

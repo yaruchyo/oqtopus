@@ -1,19 +1,20 @@
+import base64
 import logging
 import os
-import base64
+
 from flask import g
-from agent_package import create_app
-from agent_package.entrypoint_layer.search_router import search_router
-from agent_package.entrypoint_layer.modify_router import modify_router
-from agent_package.entrypoint_layer.info_router import info_router
-from agent_package.entrypoint_layer.auth_router import auth_router
-from agent_package.entrypoint_layer.contact_form_router import contact_form_router
-from agent_package import config, db_connection, IS_PRODUCTION
-from agent_package.system_layer.utils_auth import load_user_from_db
-from flask_login import LoginManager
-from flask_wtf.csrf import CSRFProtect
 from flask_limiter import Limiter
 from flask_limiter.util import get_remote_address
+from flask_login import LoginManager
+from flask_wtf.csrf import CSRFProtect
+
+from agent_package import IS_PRODUCTION, config, create_app, db_connection
+from agent_package.entrypoint_layer.auth_router import auth_router
+from agent_package.entrypoint_layer.contact_form_router import contact_form_router
+from agent_package.entrypoint_layer.info_router import info_router
+from agent_package.entrypoint_layer.modify_router import modify_router
+from agent_package.entrypoint_layer.search_router import search_router
+from agent_package.system_layer.utils_auth import load_user_from_db
 
 logger = logging.getLogger(__name__)
 

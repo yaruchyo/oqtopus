@@ -1,11 +1,11 @@
-from pymongo import MongoClient, DESCENDING
+import datetime
+import os
+
+import certifi
+from dotenv import load_dotenv
+from pymongo import DESCENDING, MongoClient
 from pymongo.errors import ConnectionFailure
 from pymongo.server_api import ServerApi
-from dotenv import load_dotenv
-import datetime
-import certifi
-
-import os
 
 load_dotenv()
 

@@ -6,8 +6,10 @@ and fetching responses from them using secure communication.
 """
 
 import logging
-from rotagent import KeyManager, OrchestratorClient
-from agent_package import pk_storage, config
+
+from rotagent import OrchestratorClient
+
+from agent_package import config, pk_storage
 from agent_package.system_layer.security import decrypt_private_key
 
 logger = logging.getLogger(__name__)

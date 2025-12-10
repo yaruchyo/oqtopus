@@ -1,14 +1,14 @@
-from flask import render_template, request, send_from_directory, current_app
 from datetime import datetime, timedelta, timezone
+
+from flask import Blueprint, current_app, render_template, request, send_from_directory
+
 from agent_package import db_connection
 from agent_package.domain_layer.route_class_domain import CATEGORIES
-from agent_package.system_layer.utils import get_registered_agents, get_domains
-
-from flask import Blueprint
+from agent_package.system_layer.utils import get_domains, get_registered_agents
 
 info_router = Blueprint("info_router", __name__)
 
-from flask_login import login_required, current_user
+from flask_login import current_user, login_required
 
 
 @info_router.route("/", methods=["GET"])

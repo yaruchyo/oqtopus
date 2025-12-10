@@ -1,10 +1,12 @@
+import logging
 import smtplib
 import ssl
-import logging
-from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
-from flask import Blueprint, request, jsonify, render_template
+from email.mime.text import MIMEText
+
+from flask import Blueprint, jsonify, render_template, request
 from pydantic import ValidationError
+
 from agent_package import config
 from agent_package.domain_layer.conntact_form_domain import ContactFormEmail
 

@@ -1,15 +1,15 @@
 import asyncio
-import aiohttp
 import json
-from flask import request, Response, stream_with_context, current_app
-from agent_package.domain_layer.route_class_domain import CategoryPrediction, CATEGORIES
-from agent_package.system_layer.utils import get_registered_agents, fetch_agent_response
-from agent_package import llm
-from flask import Blueprint
-from flask_login import current_user
-from agent_package import db_connection
 from datetime import datetime, timedelta, timezone
+
+import aiohttp
+from flask import Blueprint, Response, current_app, request, stream_with_context
+from flask_login import current_user
 from werkzeug.exceptions import HTTPException
+
+from agent_package import db_connection, llm
+from agent_package.domain_layer.route_class_domain import CATEGORIES, CategoryPrediction
+from agent_package.system_layer.utils import fetch_agent_response, get_registered_agents
 
 search_router = Blueprint("search_router", __name__)
 

@@ -1,6 +1,7 @@
-from typing import Optional, List
-from pydantic import BaseModel, Field, create_model
 from enum import Enum
+from typing import List, Optional
+
+from pydantic import BaseModel, Field, create_model
 
 # A flat list of the most common high-level business categories
 # often used for drop-down menus or categorization logic.

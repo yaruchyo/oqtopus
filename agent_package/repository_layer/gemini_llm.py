@@ -1,6 +1,7 @@
 from enum import Enum
-from google import genai
+
 from dotenv import load_dotenv
+from google import genai
 from pydantic.v1 import BaseModel
 
 load_dotenv()

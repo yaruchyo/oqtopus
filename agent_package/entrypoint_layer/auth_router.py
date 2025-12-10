@@ -1,18 +1,20 @@
+from datetime import datetime, timedelta, timezone
+
 from flask import (
     Blueprint,
-    render_template,
-    redirect,
-    url_for,
-    request,
-    flash,
     current_app,
+    flash,
+    redirect,
+    render_template,
+    request,
+    url_for,
 )
-from flask_login import login_user, logout_user, login_required, current_user
-from agent_package.system_layer.utils_auth import hash_password, check_password
-from agent_package.system_layer.security import validate_password_strength
-from agent_package.domain_layer.user_domain import User
+from flask_login import current_user, login_required, login_user, logout_user
+
 from agent_package import db_connection
-from datetime import datetime, timedelta, timezone
+from agent_package.domain_layer.user_domain import User
+from agent_package.system_layer.security import validate_password_strength
+from agent_package.system_layer.utils_auth import check_password, hash_password
 
 auth_router = Blueprint("auth_router", __name__)
 

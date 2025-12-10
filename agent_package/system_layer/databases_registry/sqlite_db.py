@@ -1,8 +1,8 @@
-import sqlite3
 import json
-import uuid
 import os
-from typing import List, Dict, Optional, Any
+import sqlite3
+import uuid
+from typing import Any, Dict, List, Optional
 
 
 class SQLiteDB:
