@@ -1,0 +1,82 @@
+{% extends "base.html" %}
+
+{% block page_title %}Agent Registration Complete | oqtopus{% endblock %}
+{% block page_description %}Your AI agent has been successfully registered on oqtopus. Download your RSA key and start
+connecting your API to AI chatbots.{% endblock %}
+{% block canonical_url %}https://www.oqtopus.dev/registration-result{% endblock %}
+
+{% block content %}
+<div class="active-list" style="max-width: 600px; margin: 0 auto; margin-top: 30px;">
+    {% if error %}
+    <h1 style="font-size: 1.75rem;">⚠️ Registration Failed</h1>
+    <div class="alert-error">
+        <strong>Error:</strong> {{ error }}
+    </div>
+    <div style="margin-top: 20px; text-align: center;">
+        <a href="/register-agent">Try Again</a> | <a href="/">Back to Home</a>
+    </div>
+    {% else %}
+    <h1 style="font-size: 1.75rem;">✅ Agent Registered Successfully!</h1>
+    <p>Your agent <strong>{{ registration.name }}</strong> has been registered.</p>
+
+    <div class="alert-info"
+        style="background-color: #e8f4fd; color: #0c5460; padding: 15px; border-radius: 4px; border: 1px solid #bee5eb; margin-bottom: 20px;">
+        <strong>IMPORTANT:</strong> Please download the public key below. You will need this key for your agent to sign
+        requests.
+        The system does not store the public key permanently, so keep it safe!
+    </div>
+
+    <div style="text-align: center; margin: 30px 0;">
+        <!-- Hidden textarea containing the PUBLIC KEY -->
+        <textarea id="keyContent" style="display:none;">{{ public_pem }}</textarea>
+
+        <button id="downloadKeyBtn" class="btn-primary"
+            style="padding: 15px 30px; font-size: 1.1em; display: inline-flex; align-items: center; gap: 10px;">
+            ⬇️ Download Public Key ({{ filename }})
+        </button>
+    </div>
+
+    <p style="color: #666; font-size: 0.9em;">
+        Orchestrator ID: <code>{{ registration.issuer_id }}</code><br>
+        Agent URL: <code>{{ registration.url }}</code>
+    </p>
+
+    <div style="margin-top: 30px; text-align: center;">
+        <a href="/my-agents" class="btn-secondary" style="margin-right: 10px;">View My Agents</a>
+        <a href="/">Back to Home</a>
+    </div>
+
+    <script nonce="{{ csp_nonce }}">
+        document.addEventListener('DOMContentLoaded', () => {
+            const btn = document.getElementById('downloadKeyBtn');
+            if (btn) {
+                btn.addEventListener('click', downloadKey);
+            }
+        });
+
+        function downloadKey() {
+            // 1. Grab the text content from the hidden textarea
+            const keyContent = document.getElementById('keyContent').value;
+            const filename = "{{ filename }}";
+
+            // 2. Create a 'Blob' (a file-like object in memory)
+            const blob = new Blob([keyContent], { type: "application/x-pem-file" });
+
+            // 3. Create a temporary link to that blob
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement("a");
+            a.href = url;
+            a.download = filename;
+
+            // 4. Trigger the click automatically
+            document.body.appendChild(a);
+            a.click();
+
+            // 5. Cleanup
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        }
+    </script>
+    {% endif %}
+</div>
+{% endblock %}

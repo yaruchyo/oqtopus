@@ -1,0 +1,342 @@
+{% extends "base.html" %}
+
+{% block page_title %}Register New Agent | oqtopus - Connect Your API to AI{% endblock %}
+{% block page_description %}Register your API endpoint as an AI agent on oqtopus. Connect your website or database
+directly to ChatGPT, Gemini, and other LLMs with secure RSA key authentication.{% endblock %}
+{% block canonical_url %}https://www.oqtopus.dev/register-agent{% endblock %}
+
+{% block content %}
+<div class="active-list" style="max-width: 600px; margin: 0 auto; margin-top: 30px;">
+    <h1 style="font-size: 1.75rem;">🔐 Register New Agent</h1>
+    <p style="color: #666; margin-bottom: 20px;">
+        Registering an agent involves exchanging RSA keys.
+        The system will generate a keypair and provide you with a <code>.pem</code> file.
+    </p>
+
+    {% if error %}
+    <div class="alert-error">
+        <strong>Error:</strong> {{ error }}
+    </div>
+    {% endif %}
+
+    <form method="POST" action="/register-agent" id="registerAgentForm">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
+        <div class="form-group">
+            <label for="name">Agent Name (Optional)</label>
+            <input type="text" id="name" name="name" placeholder="e.g. Movie Expert Agent">
+        </div>
+
+        <div class="form-group">
+            <label for="url">Agent URL</label>
+            <input type="text" id="url" name="url" required placeholder="http://localhost:5001">
+        </div>
+
+        <div class="form-group">
+            <label for="orchestrator_id">Orchestrator ID (Unique Identifier)</label>
+            <input type="text" id="orchestrator_id" name="orchestrator_id" required placeholder="e.g. movie_agent_v1"
+                pattern="[a-z0-9_]+" title="Lowercase letters, numbers, and underscores only">
+            <small style="color: #888; display: block; margin-top: 5px;">
+                Required by the agent to verify requests. Must match the ID configured in the agent.
+            </small>
+        </div>
+
+        <div class="form-group">
+            <label>Categories <span id="categoryCount" class="category-counter">(0 selected, min 1, max
+                    5)</span></label>
+
+            <!-- Selected Categories Tags Container -->
+            <div id="selectedCategoriesContainer" class="selected-categories-container">
+                <!-- Tags will be dynamically inserted here -->
+            </div>
+
+            <!-- Autocomplete Category Input -->
+            <div class="autocomplete-wrapper" id="autocompleteWrapper">
+                <input type="text" id="categoryInput" class="autocomplete-input"
+                    placeholder="Type to search categories..." autocomplete="off">
+                <div class="autocomplete-dropdown" id="autocompleteDropdown">
+                    <!-- Filtered options will appear here -->
+                </div>
+            </div>
+
+            <!-- Hidden inputs for form submission -->
+            <div id="hiddenCategoryInputs"></div>
+
+            <div id="categoryError" class="category-error" style="display: none;">
+                Please select at least 1 category (maximum 5).
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label for="description">Description (Optional)</label>
+            <textarea id="description" name="description" rows="3"
+                placeholder="Briefly describe what this agent does..."></textarea>
+        </div>
+
+        <div class="form-group" style="display: flex; align-items: center; gap: 10px; margin-top: 20px;">
+            <input type="checkbox" id="public_check" name="is_public" style="width: auto; margin: 0;">
+            <label for="public_check" style="margin: 0; cursor: pointer;">Make Agent Public</label>
+            <small style="color: #666;">(If unchecked, only you can see this agent)</small>
+        </div>
+
+        <button type="submit" class="btn-primary" style="width: 100%; margin-top: 10px;">Register Agent</button>
+    </form>
+
+    <div style="margin-top: 20px; text-align: center;">
+        <a href="/">Back to Home</a>
+    </div>
+</div>
+
+<script nonce="{{ csp_nonce }}">
+    (function () {
+        const MAX_CATEGORIES = 5;
+        const MIN_CATEGORIES = 1;
+
+        // All available categories from the server
+        const allCategories = [
+            {% for cat in categories %}
+        "{{ cat }}"{% if not loop.last %}, {% endif %}
+    {% endfor %}
+    ];
+
+    let selectedCategories = [];
+    let highlightedIndex = -1;
+
+    const input = document.getElementById('categoryInput');
+    const dropdown = document.getElementById('autocompleteDropdown');
+    const wrapper = document.getElementById('autocompleteWrapper');
+    const selectedContainer = document.getElementById('selectedCategoriesContainer');
+    const hiddenInputsContainer = document.getElementById('hiddenCategoryInputs');
+    const categoryCount = document.getElementById('categoryCount');
+    const categoryError = document.getElementById('categoryError');
+    const form = document.getElementById('registerAgentForm');
+
+    function getAvailableCategories() {
+        return allCategories.filter(cat => !selectedCategories.includes(cat));
+    }
+
+    function getFilteredCategories(query) {
+        const available = getAvailableCategories();
+        if (!query.trim()) return available;
+        const lowerQuery = query.toLowerCase();
+        return available.filter(cat => cat.toLowerCase().includes(lowerQuery));
+    }
+
+    function updateUI() {
+        const count = selectedCategories.length;
+        categoryCount.textContent = `(${count} selected, min ${MIN_CATEGORIES}, max ${MAX_CATEGORIES})`;
+
+        if (count >= MIN_CATEGORIES && count <= MAX_CATEGORIES) {
+            categoryCount.classList.remove('error');
+            categoryCount.classList.add('valid');
+        } else {
+            categoryCount.classList.add('error');
+            categoryCount.classList.remove('valid');
+        }
+
+        // Render selected tags
+        selectedContainer.innerHTML = '';
+        selectedCategories.forEach(cat => {
+            const tag = document.createElement('div');
+            tag.className = 'category-tag';
+            tag.innerHTML = `
+                <span class="category-tag-text">${cat}</span>
+                <button type="button" class="category-tag-remove" data-category="${cat}" title="Remove ${cat}">×</button>
+            `;
+            selectedContainer.appendChild(tag);
+        });
+
+        // Update hidden inputs for form submission
+        hiddenInputsContainer.innerHTML = '';
+        selectedCategories.forEach(cat => {
+            const input = document.createElement('input');
+            input.type = 'hidden';
+            input.name = 'categories';
+            input.value = cat;
+            hiddenInputsContainer.appendChild(input);
+        });
+
+        // Disable input if max reached
+        if (selectedCategories.length >= MAX_CATEGORIES) {
+            input.disabled = true;
+            input.placeholder = 'Maximum categories selected';
+        } else {
+            input.disabled = false;
+            input.placeholder = 'Type to search categories...';
+        }
+
+        // Hide error if valid
+        if (count >= MIN_CATEGORIES) {
+            categoryError.style.display = 'none';
+        }
+    }
+
+    function renderDropdown(categories) {
+        dropdown.innerHTML = '';
+        highlightedIndex = -1;
+
+        if (categories.length === 0) {
+            const noResult = document.createElement('div');
+            noResult.className = 'autocomplete-no-result';
+            noResult.textContent = 'No matching categories';
+            dropdown.appendChild(noResult);
+            return;
+        }
+
+        categories.forEach((cat, index) => {
+            const item = document.createElement('div');
+            item.className = 'autocomplete-item';
+            item.dataset.value = cat;
+            item.dataset.index = index;
+
+            // Highlight matching text
+            const query = input.value.toLowerCase();
+            if (query) {
+                const lowerCat = cat.toLowerCase();
+                const matchIndex = lowerCat.indexOf(query);
+                if (matchIndex !== -1) {
+                    item.innerHTML =
+                        cat.substring(0, matchIndex) +
+                        '<strong>' + cat.substring(matchIndex, matchIndex + query.length) + '</strong>' +
+                        cat.substring(matchIndex + query.length);
+                } else {
+                    item.textContent = cat;
+                }
+            } else {
+                item.textContent = cat;
+            }
+
+            item.addEventListener('click', () => {
+                addCategory(cat);
+            });
+
+            item.addEventListener('mouseenter', () => {
+                highlightedIndex = index;
+                updateHighlight(categories);
+            });
+
+            dropdown.appendChild(item);
+        });
+    }
+
+    function updateHighlight(categories) {
+        const items = dropdown.querySelectorAll('.autocomplete-item');
+        items.forEach((item, index) => {
+            if (index === highlightedIndex) {
+                item.classList.add('highlighted');
+                item.scrollIntoView({ block: 'nearest' });
+            } else {
+                item.classList.remove('highlighted');
+            }
+        });
+    }
+
+    function showDropdown() {
+        if (selectedCategories.length >= MAX_CATEGORIES) return;
+        const filtered = getFilteredCategories(input.value);
+        renderDropdown(filtered);
+        dropdown.classList.add('visible');
+    }
+
+    function hideDropdown() {
+        dropdown.classList.remove('visible');
+        highlightedIndex = -1;
+    }
+
+    function addCategory(category) {
+        if (!category || selectedCategories.includes(category)) return;
+        if (selectedCategories.length >= MAX_CATEGORIES) return;
+        if (!allCategories.includes(category)) return; // Only allow valid categories
+
+        selectedCategories.push(category);
+        input.value = '';
+        hideDropdown();
+        updateUI();
+        input.focus();
+    }
+
+    function removeCategory(category) {
+        selectedCategories = selectedCategories.filter(c => c !== category);
+        updateUI();
+    }
+
+    // Event: Input typing
+    input.addEventListener('input', function () {
+        showDropdown();
+    });
+
+    // Event: Input focus
+    input.addEventListener('focus', function () {
+        showDropdown();
+    });
+
+    // Event: Click outside to close
+    document.addEventListener('click', function (e) {
+        if (!wrapper.contains(e.target)) {
+            hideDropdown();
+        }
+    });
+
+    // Event: Keyboard navigation
+    input.addEventListener('keydown', function (e) {
+        const filtered = getFilteredCategories(input.value);
+
+        switch (e.key) {
+            case 'ArrowDown':
+                e.preventDefault();
+                if (!dropdown.classList.contains('visible')) {
+                    showDropdown();
+                } else {
+                    highlightedIndex = Math.min(highlightedIndex + 1, filtered.length - 1);
+                    updateHighlight(filtered);
+                }
+                break;
+
+            case 'ArrowUp':
+                e.preventDefault();
+                highlightedIndex = Math.max(highlightedIndex - 1, 0);
+                updateHighlight(filtered);
+                break;
+
+            case 'Enter':
+                e.preventDefault();
+                if (highlightedIndex >= 0 && highlightedIndex < filtered.length) {
+                    addCategory(filtered[highlightedIndex]);
+                } else if (filtered.length === 1) {
+                    // Auto-select if only one option matches
+                    addCategory(filtered[0]);
+                }
+                break;
+
+            case 'Escape':
+                hideDropdown();
+                input.blur();
+                break;
+
+            case 'Tab':
+                hideDropdown();
+                break;
+        }
+    });
+
+    // Event: Remove tag (using event delegation)
+    selectedContainer.addEventListener('click', function (e) {
+        if (e.target.classList.contains('category-tag-remove')) {
+            const category = e.target.dataset.category;
+            removeCategory(category);
+        }
+    });
+
+    // Event: Form submission validation
+    form.addEventListener('submit', function (e) {
+        if (selectedCategories.length < MIN_CATEGORIES || selectedCategories.length > MAX_CATEGORIES) {
+            e.preventDefault();
+            categoryError.style.display = 'block';
+            categoryError.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+    });
+
+    // Initialize UI
+    updateUI();
+}) ();
+</script>
+{% endblock %}

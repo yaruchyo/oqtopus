@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+
+{% block page_title %}Login | oqtopus - AI Agent Orchestration Platform{% endblock %}
+{% block page_description %}Sign in to your oqtopus account to manage your AI agents, register new agents, and connect
+your APIs to LLMs and AI chatbots like ChatGPT and Gemini.{% endblock %}
+{% block canonical_url %}https://www.oqtopus.dev/login{% endblock %}
+
+{% block content %}
+<div
+    style="max-width: 400px; margin: 0 auto; background: #fff; padding: 30px; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
+    <h1 style="text-align: center; margin-bottom: 20px; font-size: 1.75rem;">Login</h1>
+
+    <form method="POST" action="/login">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
+        <div class="form-group">
+            <label for="email">Email</label>
+            <input type="email" id="email" name="email" required>
+        </div>
+
+        <div class="form-group">
+            <label for="password">Password</label>
+            <input type="password" id="password" name="password" required>
+        </div>
+
+        <button type="submit" class="btn-primary" style="width: 100%;">Login</button>
+    </form>
+
+    <p style="text-align: center; margin-top: 15px;">
+        Don't have an account? <a href="/register">Register here</a>
+    </p>
+</div>
+{% endblock %}

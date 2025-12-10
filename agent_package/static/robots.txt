@@ -1,0 +1,42 @@
+# robots.txt for oqtopus.dev
+# Website-to-LLM Communication Protocol Platform
+
+User-agent: *
+Allow: /
+Disallow: /my-agents
+Disallow: /edit-agent/
+Disallow: /logout
+
+# Allow AI crawlers and LLM training bots
+User-agent: GPTBot
+Allow: /
+
+User-agent: ChatGPT-User
+Allow: /
+
+User-agent: Google-Extended
+Allow: /
+
+User-agent: Googlebot
+Allow: /
+
+User-agent: Bingbot
+Allow: /
+
+User-agent: anthropic-ai
+Allow: /
+
+User-agent: ClaudeBot
+Allow: /
+
+User-agent: PerplexityBot
+Allow: /
+
+User-agent: cohere-ai
+Allow: /
+
+# Sitemap location
+Sitemap: https://www.oqtopus.dev/static/sitemap.xml
+
+# Crawl-delay for politeness
+Crawl-delay: 1

@@ -1,0 +1,115 @@
+{% extends "base.html" %}
+
+{% block page_title %}Contact Us - Oqtopus | AI Agent Orchestration{% endblock %}
+
+{% block page_description %}Get in touch with the Oqtopus team. Have questions about AI agent orchestration, GEO
+optimization, or making your website visible to ChatGPT and Gemini? Send us a message.{% endblock %}
+
+{% block canonical_url %}https://www.oqtopus.dev/contact{% endblock %}
+
+{% block content %}
+<div class="form-container" style="max-width: 600px; margin: 40px auto;">
+    <h1 class="hero-title" style="font-size: 2rem; margin-bottom: 10px;">Contact Us</h1>
+    <p class="hero-subtitle" style="margin-bottom: 30px; color: var(--text-secondary);">
+        Have questions or feedback? We'd love to hear from you.
+    </p>
+
+    <form id="contactForm" class="card" style="padding: 30px;">
+        <div class="form-group" style="margin-bottom: 20px;">
+            <label for="name" style="display: block; margin-bottom: 8px; font-weight: 600;">Your Name</label>
+            <input type="text" id="name" name="name" required class="search-bar"
+                style="width: 100%; padding: 12px 15px;" placeholder="John Doe">
+        </div>
+
+        <div class="form-group" style="margin-bottom: 20px;">
+            <label for="email" style="display: block; margin-bottom: 8px; font-weight: 600;">Your Email</label>
+            <input type="email" id="email" name="email" required class="search-bar"
+                style="width: 100%; padding: 12px 15px;" placeholder="john@example.com">
+        </div>
+
+        <div class="form-group" style="margin-bottom: 20px;">
+            <label for="subject" style="display: block; margin-bottom: 8px; font-weight: 600;">Subject</label>
+            <input type="text" id="subject" name="subject" class="search-bar" style="width: 100%; padding: 12px 15px;"
+                placeholder="How can we help? (optional)">
+        </div>
+
+        <div class="form-group" style="margin-bottom: 25px;">
+            <label for="message" style="display: block; margin-bottom: 8px; font-weight: 600;">Message</label>
+            <textarea id="message" name="message" required rows="5" class="search-bar"
+                style="width: 100%; padding: 12px 15px; resize: vertical; min-height: 120px;"
+                placeholder="Tell us what's on your mind..."></textarea>
+        </div>
+
+        <button type="submit" class="btn-primary" id="submitBtn"
+            style="width: 100%; padding: 14px; font-size: 1rem; cursor: pointer;">
+            <span id="btnText">Send Message</span>
+            <span id="btnLoading" style="display: none;">Sending...</span>
+        </button>
+
+        <div id="formResult" style="margin-top: 20px; display: none; padding: 15px; border-radius: 8px;"></div>
+    </form>
+</div>
+
+<script nonce="{{ csp_nonce }}">
+    document.getElementById('contactForm').addEventListener('submit', async function (e) {
+        e.preventDefault();
+
+        const submitBtn = document.getElementById('submitBtn');
+        const btnText = document.getElementById('btnText');
+        const btnLoading = document.getElementById('btnLoading');
+        const formResult = document.getElementById('formResult');
+
+        // Disable button and show loading
+        submitBtn.disabled = true;
+        btnText.style.display = 'none';
+        btnLoading.style.display = 'inline';
+        formResult.style.display = 'none';
+
+        const formData = {
+            name: document.getElementById('name').value,
+            email: document.getElementById('email').value,
+            subject: document.getElementById('subject').value || 'Contact Form Submission',
+            message: document.getElementById('message').value
+        };
+
+        try {
+            const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+
+            const response = await fetch('/api/send-contact-email', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': csrfToken
+                },
+                body: JSON.stringify(formData)
+            });
+
+            const result = await response.json();
+
+            if (response.ok) {
+                formResult.style.display = 'block';
+                formResult.style.background = '#e3f9e5';
+                formResult.style.borderLeft = '4px solid var(--success-color)';
+                formResult.style.color = 'var(--success-color)';
+                formResult.innerHTML = '<strong>✓ Message sent successfully!</strong><br>We\'ll get back to you soon.';
+
+                // Clear form
+                document.getElementById('contactForm').reset();
+            } else {
+                throw new Error(result.error || 'Failed to send message');
+            }
+        } catch (error) {
+            formResult.style.display = 'block';
+            formResult.style.background = '#fff5f5';
+            formResult.style.borderLeft = '4px solid var(--error-color)';
+            formResult.style.color = 'var(--error-color)';
+            formResult.innerHTML = '<strong>✗ Error:</strong> ' + error.message;
+        } finally {
+            // Re-enable button
+            submitBtn.disabled = false;
+            btnText.style.display = 'inline';
+            btnLoading.style.display = 'none';
+        }
+    });
+</script>
+{% endblock %}

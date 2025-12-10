@@ -1,0 +1,383 @@
+{% extends "base.html" %}
+
+{% block page_title %}oqtopus - Make Your Website Visible to AI chatbots and LLMs | GEO & Agentic Web Platform{% endblock %}
+{% block page_description %}Stop being invisible to ChatGPT, Gemini & AI search. oqtopus is the protocol for
+website-to-LLM communication. Connect your API directly to AI agents, fix AI hallucinations about your business, and get
+real-time visibility in AI answers.{% endblock %}
+{% block canonical_url %}https://www.oqtopus.dev/{% endblock %}
+
+{% block content %}
+<!-- Chat Interface -->
+<div class="chat-container">
+    <h1 style="margin-bottom: 5px; font-size: 1.75rem;">Orchestrator Chat</h1>
+    <p style="color: var(--text-secondary); margin-bottom: 2px;">
+        Ask a question. The Orchestrator will gather info from agents and synthesize an answer.
+    </p>
+    <p style="color: var(--text-secondary); margin-bottom: 25px;">
+        All registered agents can be found in the table below (📡 Registered Agents).
+    </p>
+    <div class="chat-input-wrapper">
+        <div class="search-input-container">
+            <input type="text" id="userQuery"
+                placeholder="e.g., 'What is the plot of Inception?' or 'Real Estate prices in NY'" autocomplete="off">
+            <div class="suggestions-dropdown" id="suggestionsDropdown">
+                <!-- Suggestions will be populated by JavaScript -->
+            </div>
+        </div>
+        <button id="sendBtn" class="btn-primary">Ask Agents</button>
+    </div>
+
+    <div id="results-area"></div>
+</div>
+
+<!-- Registered Agents Detailed View -->
+<div class="active-list">
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+        <h3>📡 Registered Agents</h3>
+    </div>
+
+    <table style="margin-top: 15px;">
+        <thead>
+            <tr>
+                <th style="width: 40%;">Agent Info</th>
+                <th style="width: 40%;">URL</th>
+                <th style="width: 20%;">Category</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for agent in agents %}
+            <tr>
+                <td>
+                    <div style="font-weight: bold; font-size: 1.05em;">{{ agent.name or agent.url }}</div>
+                    {% if agent.description %}
+                    {% set original_description = agent.description %}
+                    {% set lines = original_description.split('\n') %}
+
+                    {# Take up to the first 3 lines #}
+                    {% set truncated_by_lines = lines[:3]|join('\n') %}
+
+                    {# Determine if line truncation occurred #}
+                    {% set lines_truncated_flag = (lines|length > 3) %}
+
+                    {# Truncate by characters to 200. We pass an empty string for the 'end'
+                    parameter because we'll add the ellipsis conditionally later. #}
+                    {% set final_truncated_text = truncated_by_lines|truncate(200, True, '') %}
+
+                    {# Determine if character truncation occurred by comparing lengths #}
+                    {% set chars_truncated_flag = (final_truncated_text|length < truncated_by_lines|length) %} {# Add
+                        ellipsis if either line or character truncation happened #} {% set
+                        add_ellipsis=lines_truncated_flag or chars_truncated_flag %} <div
+                        style="font-size: 0.85em; color: var(--text-secondary); margin-top: 4px;">
+                        {{ final_truncated_text|replace('\n', '<br>')|safe }}{% if add_ellipsis %}...{% endif %}
+</div>
+{% endif %}
+</td>
+<td><a href="{{ agent.url }}" target="_blank" rel="noopener noreferrer" class="url-badge">{{ agent.url
+        }}</a></td>
+<td>
+    {% if agent.categories %}
+    {% for cat in agent.categories %}
+    <span class="category-badge" style="margin-right: 4px; margin-bottom: 4px; display: inline-block;">{{ cat }}</span>
+    {% endfor %}
+    {% else %}
+    <span class="category-badge">{{ agent.category }}</span>
+    {% endif %}
+</td>
+</tr>
+{% else %}
+<tr>
+    <td colspan="3" style="padding: 30px; text-align: center; color: var(--text-secondary); font-style: italic;">
+        No public agents registered yet.
+    </td>
+</tr>
+{% endfor %}
+</tbody>
+</table>
+</div>
+
+<script nonce="{{ csp_nonce }}">
+    // Predefined questions for autocomplete
+    const predefinedQuestions = [
+        // Movie-related questions
+        "Which movies was Tom Hanks as a cast member?",
+        "Which movies achieved a perfect 100% score on the Rotten Tomatoes Rating?",
+        "Which movies is Leonardo DiCaprio in the cast?",
+        "Which movie has a very high IMDb rating of 8.8 but a significantly lower Rotten Tomatoes rating of 70%?",
+        // Real estate / apartments questions
+        "What is the most affordable city in Germany where I can find short-term apartments for the lowest price?",
+        "What is the average price for an apartment in Munich/Berlin for rent?",
+        "What is the average price in Hamburg per m² for rent?",
+        "What city has the most number of efficient apartments?"
+    ];
+
+    let suggestionsVisible = false;
+
+    function showSuggestions() {
+        const dropdown = document.getElementById('suggestionsDropdown');
+        const input = document.getElementById('userQuery');
+        const query = input.value.trim().toLowerCase();
+
+        // Stop autocomplete after 10 characters - user is typing their own question
+        if (query.length > 10) {
+            dropdown.classList.remove('visible');
+            suggestionsVisible = false;
+            return;
+        }
+
+        let questionsToShow = predefinedQuestions;
+
+        // If user has typed something, filter the questions
+        if (query.length > 0) {
+            questionsToShow = predefinedQuestions.filter(q =>
+                q.toLowerCase().includes(query)
+            );
+        }
+
+        if (questionsToShow.length === 0) {
+            dropdown.classList.remove('visible');
+            suggestionsVisible = false;
+            return;
+        }
+
+        dropdown.innerHTML = questionsToShow.map(q =>
+            `<div class="suggestion-item" data-question="${q.replace(/"/g, '&quot;')}">
+                <span class="suggestion-icon">💡</span>
+                <span class="suggestion-text">${highlightMatch(q, query)}</span>
+            </div>`
+        ).join('');
+
+        dropdown.classList.add('visible');
+        suggestionsVisible = true;
+    }
+
+    function highlightMatch(text, query) {
+        if (!query) return text;
+        const regex = new RegExp(`(${query.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')})`, 'gi');
+        return text.replace(regex, '<strong>$1</strong>');
+    }
+
+    function filterSuggestions() {
+        showSuggestions();
+    }
+
+    function selectSuggestion(question) {
+        const input = document.getElementById('userQuery');
+        input.value = question;
+        hideSuggestions();
+        input.focus();
+    }
+
+    function hideSuggestions() {
+        const dropdown = document.getElementById('suggestionsDropdown');
+        dropdown.classList.remove('visible');
+        suggestionsVisible = false;
+    }
+
+    // Hide suggestions when clicking outside
+    document.addEventListener('click', function (e) {
+        const container = document.querySelector('.search-input-container');
+        if (container && !container.contains(e.target)) {
+            hideSuggestions();
+        }
+    });
+
+    // Handle keyboard navigation in suggestions
+    document.addEventListener('keydown', function (e) {
+        if (!suggestionsVisible) return;
+
+        const dropdown = document.getElementById('suggestionsDropdown');
+        const items = dropdown.querySelectorAll('.suggestion-item');
+        const activeItem = dropdown.querySelector('.suggestion-item.active');
+
+        if (e.key === 'ArrowDown') {
+            e.preventDefault();
+            if (!activeItem) {
+                items[0]?.classList.add('active');
+            } else {
+                const index = Array.from(items).indexOf(activeItem);
+                activeItem.classList.remove('active');
+                items[(index + 1) % items.length]?.classList.add('active');
+            }
+        } else if (e.key === 'ArrowUp') {
+            e.preventDefault();
+            if (!activeItem) {
+                items[items.length - 1]?.classList.add('active');
+            } else {
+                const index = Array.from(items).indexOf(activeItem);
+                activeItem.classList.remove('active');
+                items[(index - 1 + items.length) % items.length]?.classList.add('active');
+            }
+        } else if (e.key === 'Enter' && activeItem) {
+            e.preventDefault();
+            activeItem.click();
+        } else if (e.key === 'Escape') {
+            hideSuggestions();
+        }
+    });
+
+    function handleEnter(e) {
+        if (e.key === 'Enter') {
+            hideSuggestions();
+            performSearch();
+        }
+    }
+
+    async function performSearch() {
+        const inputField = document.getElementById('userQuery');
+        const sendBtn = document.getElementById('sendBtn');
+        const resultsArea = document.getElementById('results-area');
+
+        const query = inputField.value.trim();
+        if (!query) return;
+
+        // UI Reset
+        inputField.disabled = true;
+        sendBtn.disabled = true;
+        sendBtn.innerHTML = 'Thinking...';
+        resultsArea.innerHTML = '';
+
+        // Optimistic UI update for usage badge
+        const usageBadge = document.querySelector('.usage-text');
+        if (usageBadge) {
+            const parts = usageBadge.innerText.split('/');
+            if (parts.length === 2) {
+                let current = parseInt(parts[0].trim());
+                const max = parseInt(parts[1].trim());
+                if (!isNaN(current) && current > 0) {
+                    current -= 1;
+                    usageBadge.innerText = `${current} / ${max}`;
+                }
+            }
+        }
+
+        // Create placeholders
+        const statusDiv = document.createElement('div');
+        statusDiv.className = 'loader-text';
+        statusDiv.innerHTML = '<div class="loader"></div> <span>Analyzing query & contacting agents...</span>';
+        resultsArea.appendChild(statusDiv);
+
+        const categoryDiv = document.createElement('div');
+        resultsArea.appendChild(categoryDiv);
+
+        const agentsDiv = document.createElement('div');
+        agentsDiv.className = 'agent-container';
+        resultsArea.appendChild(agentsDiv);
+
+        const finalDiv = document.createElement('div');
+        resultsArea.appendChild(finalDiv);
+
+        try {
+            const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+            const response = await fetch('/search', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': csrfToken
+                },
+                body: JSON.stringify({ query: query })
+            });
+
+            const reader = response.body.getReader();
+            const decoder = new TextDecoder();
+            let buffer = '';
+
+            while (true) {
+                const { done, value } = await reader.read();
+                if (done) break;
+
+                buffer += decoder.decode(value, { stream: true });
+                const lines = buffer.split('\n');
+                buffer = lines.pop();
+
+                for (const line of lines) {
+                    if (!line.trim()) continue;
+                    try {
+                        const event = JSON.parse(line);
+                        handleStreamEvent(event, statusDiv, categoryDiv, agentsDiv, finalDiv);
+                    } catch (e) {
+                        console.error("Error parsing JSON chunk", e);
+                    }
+                }
+            }
+
+            statusDiv.remove();
+
+        } catch (err) {
+            statusDiv.innerHTML = `<div class="agent-response-card error" style="padding: 15px;">Error: ${err.message}</div>`;
+        } finally {
+            inputField.disabled = false;
+            sendBtn.disabled = false;
+            sendBtn.innerHTML = 'Ask Agents';
+            inputField.focus();
+        }
+    }
+
+    function handleStreamEvent(event, statusDiv, categoryDiv, agentsDiv, finalDiv) {
+
+        if (event.type === 'category') {
+            categoryDiv.innerHTML = `<div style="margin: 20px 0; padding: 10px 15px; background: #e3f2fd; border-radius: 8px; color: #1565c0; font-weight: 600;">
+            <p>The Orchestrator has classified your question as: ${event.data}.</p>
+            <p>It will now forward your query to the appropriate agents registered under this category.</p>
+            </div>`;
+        }
+
+        else if (event.type === 'agents') {
+            const responses = event.data;
+            statusDiv.innerHTML = '<div class="loader"></div> <span>Synthesizing final answer with LLM...</span>';
+
+            if (responses && responses.length > 0) {
+                const header = document.createElement('div');
+                header.innerHTML = '<h4 style="margin: 20px 0 10px;">Agent Sources Responses</h4>';
+                agentsDiv.appendChild(header);
+
+                responses.forEach(agent => {
+                    const card = document.createElement('div');
+                    const isError = agent.error !== undefined;
+                    card.className = `agent-response-card ${isError ? 'error' : 'success'} animate-fade-in`;
+
+                    const urlDisplay = agent.name || 'Unknown Agent';
+                    let content = isError ? `Error: agent is unavailable` : agent.result; // This line should be updated
+
+                    card.innerHTML = `
+                            <div class="agent-header">${urlDisplay}</div>
+                            <div class="agent-content">${content}</div>
+                        `;
+                    agentsDiv.appendChild(card);
+                });
+            } else {
+                agentsDiv.innerHTML = '<div style="color: var(--text-secondary); margin: 20px 0; font-style: italic;">No agents were queried for this category.</div>';
+            }
+        }
+
+        else if (event.type === 'final') {
+            finalDiv.innerHTML = `
+                    <div class="final-answer-card animate-fade-in">
+                        <div class="final-answer-title">✨ Final Answer</div>
+                        <div class="final-answer-content">${event.data}</div>
+                    </div>
+                `;
+        }
+    }
+
+    // Event Listeners (Replacements for inline handlers)
+    document.addEventListener('DOMContentLoaded', () => {
+        const inputField = document.getElementById('userQuery');
+        const sendBtn = document.getElementById('sendBtn');
+        const dropdown = document.getElementById('suggestionsDropdown');
+
+        inputField.addEventListener('keypress', handleEnter);
+        inputField.addEventListener('focus', showSuggestions);
+        inputField.addEventListener('input', filterSuggestions);
+
+        sendBtn.addEventListener('click', performSearch);
+
+        // Event delegation for suggestions
+        dropdown.addEventListener('click', (e) => {
+            const item = e.target.closest('.suggestion-item');
+            if (item) {
+                selectSuggestion(item.dataset.question);
+            }
+        });
+    });
+</script>
+{% endblock %}

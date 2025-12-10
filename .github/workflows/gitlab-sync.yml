@@ -1,0 +1,29 @@
+name: Sync to GitLab
+
+on:
+  push:
+    branches:
+      - main  # or master, and any other branches you want to sync
+  delete:
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0 # Required to retrieve git history
+
+      - name: Add GitLab Remote
+        # Replace 'gitlab.com/YOUR_USER/YOUR_REPO.git' with your actual GitLab repo URL
+        run: |
+          git remote add gitlab https://oauth2:${{ secrets.GITLAB_TOKEN }}@gitlab.com/yaruchyk.o/oqtopus.git
+
+      - name: Push to GitLab
+        # The --force flag is dangerous but often necessary for mirrors. 
+        # If you want to be safer, remove --force, but sync might fail on history rewrites.
+        run: |
+          git push gitlab main
+          # If you have tags, uncomment the line below:
+          # git push gitlab --tags

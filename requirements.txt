@@ -1,0 +1,18 @@
+# Web Framework
+flask>=3.1.2
+python-dotenv>=1.0.0
+pydantic>=2.0.0
+aiohttp>=3.9.0
+google-genai==1.1.0
+rotagent==0.1.0
+pymongo==4.10.1
+openai==1.62.0
+python-dotenv==1.1.0
+Flask-Login==0.6.3
+Werkzeug==3.1.4
+certifi==2025.11.12
+pydantic[email]
+# Security
+Flask-WTF>=1.2.0
+Flask-Limiter>=3.5.0
+cryptography>=42.0.0

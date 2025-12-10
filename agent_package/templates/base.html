@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <!-- Google tag (gtag.js) -->
+    {% if is_production %}
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-LH9DCWQ0E5"></script>
+    <script nonce="{{ csp_nonce }}">
+        window.dataLayer = window.dataLayer || [];
+        function gtag() { dataLayer.push(arguments); }
+        gtag('js', new Date());
+
+        gtag('config', 'G-LH9DCWQ0E5');
+    </script>
+    {% endif %}
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- Primary SEO Meta Tags - Targeting AI Visibility & GEO Queries -->
+    <title>{% block page_title %}Qqtopus - Make Your Website Visible to AI chatbots and LLMs | GEO & Agentic Web
+        Platform{%
+        endblock %}</title>
+    <meta name="description"
+        content="{% block page_description %}Stop being invisible to ChatGPT, Gemini & AI search. oqtopus is the protocol for website-to-LLM communication. Connect your API directly to AI agents, fix AI hallucinations about your business, and get real-time visibility in AI answers. The future of search beyond SEO.{% endblock %}">
+
+    <!-- Extended Keywords Targeting 50+ AI Visibility Search Queries -->
+    <meta name="keywords"
+        content="make website visible to ChatGPT, how to get my website data into Gemini answers, fix AI hallucinations about my company, content not showing in AI search results, ChatGPT says my product is out of stock, prevent AI outdated pricing, make LLM read website real time, force ChatGPT fetch live data, business invisible to ChatGPT, SEO dead 2025, alternatives to SEO AI era, generative engine optimization GEO, stop relying on web crawlers, bypass Google indexing visibility, future of search beyond keywords backlinks, zero-click AI searches marketing, survive when nobody clicks links, distributed search engine websites, connect database to ChatGPT, turn website into AI agent, expose API to LLM context window, architecture distributed AI search, standard websites talking AI models, API endpoint for AI bots, active retrieval augmented generation web, make site machine readable agents, replace search bar LLM orchestrator, framework decentralized AI search, build agent-ready website, REST API vs LLM tool calling, Python framework distributed LLM orchestration, secure handshake website AI agent, RSA key authentication AI crawlers, active inference web pages, self-hosted AI search registry, intent classification routing web APIs, GEO tools developers, turning static content dynamic agent responses, feed live data to ChatGPT, real-time hotel availability Gemini, let AI users search my database, push method AI content updates, API gateway generative AI traffic, structured data format LLM agents, register site as tool for AI, protect data from scraping allow AI queries, monetize AI agent traffic, protocol website-to-LLM communication, AI Agent Orchestration, Agentic AI, LLM Gateway, oqtopus, rotagent, Google Gemini, OpenAI, Python Flask AI Agents">
+    <meta name="author" content="oqtopus">
+    <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
+
+    <!-- Additional SEO Meta Tags for AI Discovery -->
+    <meta name="topic" content="AI Agent Orchestration, Generative Engine Optimization, Website-to-LLM Communication">
+    <meta name="subject" content="Making websites visible to AI chatbots and LLMs">
+    <meta name="abstract"
+        content="oqtopus solves the problem of website invisibility in AI search. When users ask ChatGPT or Gemini about your business, oqtopus ensures accurate, real-time data is provided instead of hallucinations or outdated information.">
+    <meta name="summary"
+        content="The solution for businesses invisible to AI. Connect your website directly to LLMs using secure protocols. Alternative to traditional SEO for the AI-first era.">
+    <meta name="classification" content="AI Technology, Search Technology, Developer Tools">
+    <meta name="category" content="Generative Engine Optimization Platform">
+    <meta name="coverage" content="Worldwide">
+    <meta name="distribution" content="Global">
+    <meta name="rating" content="General">
+    <meta name="referrer" content="origin-when-cross-origin">
+    <meta name="format-detection" content="telephone=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-title" content="oqtopus">
+
+    <!-- Canonical URL -->
+    <link rel="canonical" href="{% block canonical_url %}https://www.oqtopus.dev/{% endblock %}">
+
+    <!-- Geo Tags -->
+    <meta name="geo.region" content="US-CA" />
+    <meta name="geo.placename" content="San Francisco" />
+    <meta name="geo.position" content="37.7749;-122.4194" />
+    <meta name="ICBM" content="37.7749, -122.4194" />
+
+    <!-- Open Graph / Facebook - Enhanced for AI Discovery Topics -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://www.oqtopus.dev/">
+    <meta property="og:site_name" content="oqtopus">
+    <meta property="og:title" content="Oqtopus - Make Your Website Visible to AI chatbots and LLMs | GEO Platform">
+    <meta property="og:description"
+        content="Is your business invisible to ChatGPT and Gemini? oqtopus is the protocol for website-to-LLM communication. Connect your API directly to AI agents, fix hallucinations, and get real-time AI visibility. The future of search beyond SEO.">
+    <meta property="og:locale" content="en_US">
+    <meta property="og:image" content="https://www.oqtopus.dev/static/og-image.png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:image:alt" content="oqtopus - AI Agent Orchestration Platform">
+
+    <!-- Twitter Card - Enhanced -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:site" content="@oqtopus_dev">
+    <meta name="twitter:creator" content="@oqtopus_dev">
+    <meta name="twitter:url" content="https://www.oqtopus.dev/">
+    <meta name="twitter:title" content="oqtopus - Make Your Website Visible to AI chatbots and LLMs">
+    <meta name="twitter:description"
+        content="The solution for businesses invisible to ChatGPT & Gemini. Protocol for website-to-LLM communication. Connect APIs to AI agents. GEO platform for the post-SEO era.">
+    <meta property="twitter:image" content="https://www.oqtopus.dev/static/og-image.png">
+    <meta property="twitter:image:alt" content="oqtopus AI Agent Orchestration">
+
+    <!-- Structured Data: Organization -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "Organization",
+        "name": "oqtopus",
+        "alternateName": "Oqtopus AI",
+        "url": "https://www.oqtopus.dev",
+        "description": "Distributed AI agent orchestration platform that makes websites visible to ChatGPT, Gemini, and AI chatbots. The protocol for website-to-LLM communication.",
+        "sameAs": [
+            "https://github.com/yaruchyo/oqtopus",
+            "https://pypi.org/project/rotagent/"
+        ]
+    }
+    </script>
+
+    <!-- Structured Data: SoftwareApplication -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "SoftwareApplication",
+        "name": "oqtopus",
+        "applicationCategory": "DeveloperApplication",
+        "operatingSystem": "Web, Linux, macOS, Windows",
+        "description": "Platform for Generative Engine Optimization (GEO). Makes your website visible to AI chatbots like ChatGPT and Gemini. Connects APIs directly to LLMs for real-time data access.",
+        "url": "https://www.oqtopus.dev",
+        "offers": {
+            "@type": "Offer",
+            "price": "0",
+            "priceCurrency": "USD"
+        },
+        "featureList": [
+            "Make website visible to ChatGPT and Gemini",
+            "Fix AI hallucinations about your business",
+            "Real-time data in AI answers",
+            "Connect database to ChatGPT for public users",
+            "Turn your website into an AI agent",
+            "Expose API to LLM context window automatically",
+            "Secure RSA key authentication for AI crawlers",
+            "Protocol for website-to-LLM communication",
+            "Alternative to SEO for AI era",
+            "Generative Engine Optimization platform"
+        ]
+    }
+    </script>
+
+    <!-- Structured Data: WebApplication -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "WebApplication",
+        "name": "oqtopus AI Agent Orchestrator",
+        "url": "https://www.oqtopus.dev",
+        "browserRequirements": "Requires JavaScript",
+        "applicationCategory": "BusinessApplication",
+        "aggregateRating": {
+            "@type": "AggregateRating",
+            "ratingValue": "5",
+            "ratingCount": "1"
+        },
+        "description": "The solution when your business is invisible to AI chatbots. Register your agent, connect your API to LLMs, and ensure accurate real-time information in AI-generated answers."
+    }
+    </script>
+
+    <!-- Structured Data: FAQPage for AI Visibility Questions -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "FAQPage",
+        "mainEntity": [
+            {
+                "@type": "Question",
+                "name": "Why doesn't ChatGPT know my business exists?",
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "ChatGPT and other LLMs use training data with a knowledge cutoff date and cannot access real-time web data. oqtopus solves this by providing a protocol for website-to-LLM communication, allowing AI agents to query your data directly in real-time."
+                }
+            },
+            {
+                "@type": "Question",
+                "name": "How do I get my website data into Gemini answers?",
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "oqtopus enables Generative Engine Optimization (GEO) by connecting your website or API directly to AI orchestrators. Register your agent with oqtopus, and when users ask relevant questions, your data is fetched in real-time and included in AI-generated responses."
+                }
+            },
+            {
+                "@type": "Question",
+                "name": "How to fix AI hallucinations about my company in LLMs?",
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "AI hallucinations occur when LLMs don't have accurate data. oqtopus prevents this by creating a direct, authenticated connection between your data source and AI systems, ensuring LLMs receive accurate, up-to-date information about your business."
+                }
+            },
+            {
+                "@type": "Question",
+                "name": "how to SEO in 2025?",
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "Traditional SEO is evolving. With AI-powered search and zero-click results, businesses need Generative Engine Optimization (GEO). oqtopus provides an alternative to traditional SEO by making your content directly accessible to AI agents and LLMs."
+                }
+            },
+            {
+                "@type": "Question",
+                "name": "How to connect my database to ChatGPT for public users?",
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "oqtopus allows you to register your database or API as an AI agent. When ChatGPT or similar systems route queries through oqtopus, your database is queried directly using secure JWT authentication, and the results are included in AI responses."
+                }
+            },
+            {
+                "@type": "Question",
+                "name": "What is the protocol for website-to-LLM communication?",
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "oqtopus and rotagent together form a protocol for website-to-LLM communication. It uses RSA key authentication, JWT tokens, and secure handshakes to allow AI agents to query your website data while protecting against unauthorized access."
+                }
+            },
+            {
+                "@type": "Question",
+                "name": "How to turn my website into an AI agent?",
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "With oqtopus, you can register your website as an AI agent. Install the rotagent Python package, create an endpoint that responds to queries, register with oqtopus.dev, and your website becomes queryable by AI orchestrators and LLMs."
+                }
+            },
+            {
+                "@type": "Question",
+                "name": "How to make my site machine-readable for AI agents?",
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "oqtopus provides a structured format for AI agent communication. By implementing the rotagent protocol, your site becomes machine-readable with JSON responses, JWT authentication, and categorized endpoints that AI can understand and query."
+                }
+            }
+        ]
+    }
+    </script>
+
+    <!-- Structured Data: HowTo for Registering Agent -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "HowTo",
+        "name": "How to Register Your Website as an AI Agent",
+        "description": "Step-by-step guide to making your website visible to AI chatbots like ChatGPT and Gemini using oqtopus",
+        "step": [
+            {
+                "@type": "HowToStep",
+                "name": "Install rotagent",
+                "text": "Install the rotagent Python package with pip install rotagent"
+            },
+            {
+                "@type": "HowToStep", 
+                "name": "Create API Endpoint",
+                "text": "Create an API endpoint that responds to queries with your data in JSON format"
+            },
+            {
+                "@type": "HowToStep",
+                "name": "Register on oqtopus",
+                "text": "Visit oqtopus.dev and register your agent with your endpoint URL and categories"
+            },
+            {
+                "@type": "HowToStep",
+                "name": "Download PEM Key",
+                "text": "Download the RSA key file and place it in your agent's authorized_keys folder"
+            },
+            {
+                "@type": "HowToStep",
+                "name": "Verify Connection",
+                "text": "Your website is now queryable by AI agents with secure JWT authentication"
+            }
+        ]
+    }
+    </script>
+    <!-- Connect Static CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+    <!-- Optional: Add Google Fonts for Inter or SF Pro feeling -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+    <style>
+        /* Force font override if needed via inline, but style.css handles it mostly */
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+    </style>
+    {% block extra_styles %}{% endblock %}
+</head>
+
+<body>
+    <div class="container">
+        <!-- Modern Navigation -->
+        <nav class="main-nav">
+            <div class="brand">
+                <span>🤖</span> Agent Orchestrator
+            </div>
+
+            <!-- Desktop Navigation (Hidden on Mobile) -->
+            <div class="nav-links desktop-nav">
+                {% if requests_left is defined %}
+                <div class="usage-badge" title="Requests remaining today">
+                    <span class="usage-icon">⚡</span>
+                    <span class="usage-text">{{ requests_left }} / {{ max_requests }}</span>
+                </div>
+                {% endif %}
+                <a href="/">Home</a>
+                <a href="/contact">Contact</a>
+                {% if current_user.is_authenticated %}
+                <a href="/my-agents">My Agents</a>
+                <span class="desktop-separator"
+                    style="display:inline-block; width: 1px; height: 15px; background: #ddd; vertical-align: middle; margin: 0 10px;"></span>
+                <span class="user-greeting" style="color: var(--primary-color);">{{ current_user.username }}</span>
+                <a href="/logout" class="btn-logout">Logout</a>
+                {% else %}
+                <a href="/login">Login</a>
+                <a href="/register" class="btn-primary" style="color: white !important;">Get Started</a>
+                {% endif %}
+            </div>
+        </nav>
+
+        <!-- Burger Menu Button (Moved Outside Nav for strict Z-indexing) -->
+        <button class="burger-btn" id="burgerBtn" type="button" aria-label="Toggle navigation">
+            <span></span>
+            <span></span>
+            <span></span>
+        </button>
+
+        <!-- Mobile Navigation Drawer (Moved Outside Nav) -->
+        <div class="nav-links mobile-nav" id="mobileNav">
+            {% if requests_left is defined %}
+            <div class="usage-badge" title="Requests remaining today">
+                <span class="usage-icon">⚡</span>
+                <span class="usage-text">{{ requests_left }} / {{ max_requests }}</span>
+            </div>
+            {% endif %}
+            <a href="/">Home</a>
+            <a href="/contact">Contact</a>
+            {% if current_user.is_authenticated %}
+            <a href="/my-agents">My Agents</a>
+            <!-- No separator needed for mobile -->
+            <span class="user-greeting" style="padding: 15px 0; font-weight: bold; color: var(--primary-color);">{{
+                current_user.username }}</span>
+            <a href="/logout" class="btn-logout">Logout</a>
+            {% else %}
+            <a href="/login">Login</a>
+            <a href="/register" class="btn-primary" style="color: white !important;">Get Started</a>
+            {% endif %}
+        </div>
+
+        <!-- Mobile Overlay -->
+        <div class="mobile-overlay" id="mobileOverlay" onclick="toggleMobileMenu()"></div>
+
+        <script nonce="{{ csp_nonce }}">
+            function toggleMobileMenu() {
+                const burgerBtn = document.getElementById('burgerBtn');
+                const mobileNav = document.getElementById('mobileNav');
+                const overlay = document.getElementById('mobileOverlay');
+
+                if (burgerBtn && mobileNav && overlay) {
+                    const isActive = mobileNav.classList.toggle('active');
+                    burgerBtn.classList.toggle('active');
+                    overlay.classList.toggle('active');
+                    document.body.style.overflow = isActive ? 'hidden' : '';
+                }
+            }
+
+            document.addEventListener('DOMContentLoaded', () => {
+                const burgerBtn = document.getElementById('burgerBtn');
+                const overlay = document.getElementById('mobileOverlay');
+                const mobileNav = document.getElementById('mobileNav');
+
+                // Explicitly attach click listeners
+                if (burgerBtn) {
+                    burgerBtn.addEventListener('click', (e) => {
+                        e.stopPropagation(); // Prevent bubbling
+                        toggleMobileMenu();
+                    });
+                }
+
+                if (overlay) {
+                    overlay.addEventListener('click', toggleMobileMenu);
+                }
+
+                if (mobileNav) {
+                    mobileNav.querySelectorAll('a').forEach(link => {
+                        link.addEventListener('click', () => {
+                            // Only close if it's the mobile drawer
+                            if (window.innerWidth < 768 && mobileNav.classList.contains('active')) {
+                                toggleMobileMenu();
+                            }
+                        });
+                    });
+                }
+            });
+        </script>
+
+        <!-- Flash Messages Area -->
+        <div class="flash-messages">
+            {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+            {% for category, message in messages %}
+            <div class="card"
+                style="padding: 15px; background: {% if category=='error' %}#fff5f5{% else %}#e3f9e5{% endif %}; border-left: 4px solid {% if category=='error' %}var(--error-color){% else %}var(--success-color){% endif %}; margin-bottom: 20px;">
+                <span
+                    style="font-weight: bold; color: {% if category=='error' %}var(--error-color){% else %}var(--success-color){% endif %};">
+                    {{ message }}
+                </span>
+            </div>
+            {% endfor %}
+            {% endif %}
+            {% endwith %}
+        </div>
+
+        <!-- Main Content -->
+        {% block content %}{% endblock %}
+    </div>
+</body>
+
+</html>

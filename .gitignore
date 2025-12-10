@@ -1,0 +1,9 @@
+.env
+.env*
+.idea
+*/__pychache__/*
+*.pem
+*orchestrator_data.json
+*.pyc
+*.db
+*.DS_Store
