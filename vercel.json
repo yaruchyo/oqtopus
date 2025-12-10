@@ -1,9 +1,5 @@
 {
-  "git": {
-    "deploymentEnabled": {
-      "main": true
-    }
-  },
+  "version": 2,
   "builds": [
     { "src": "app.py", "use": "@vercel/python" }
   ],
