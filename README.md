@@ -17,6 +17,19 @@
 
 ---
 
+> [!WARNING]
+> **IMPORTANT SECURITY NOTICE regarding Crypto Scams**
+> 
+> **oqtopus is a strictly open-source software project.** > 
+> * We do **NOT** have a token, coin, cryptocurrency, or NFT.
+> * We are **NOT** asking for investments or conducting any presales.
+> * Any social media accounts (Twitter/X, Telegram) claiming to be "Oqtopus" and promoting tokens (e.g., `$OQTO`, `$TOPUS`) are **SCAMS**.
+> * The only official source of truth is this GitLab/GitHub repository and the website linked above.
+> 
+> **Do not send money to anyone claiming to represent this project.**
+
+---
+
 ## 🎯 What is oqtopus?
 
 **oqtopus** is a distributed AI agent orchestration platform that intelligently routes user queries to specialized agents based on category classification. It acts as a central hub that:
